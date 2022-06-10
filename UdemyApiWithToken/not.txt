@@ -1,0 +1,1 @@
+﻿dotnet ef dbcontext scaffold  "Data Source=DESKTOP-IBLI6B4;Initial Catalog=UdemyApiWithToken;Integrated Security=True" Microsoft.EntityFrameworkCore.SqlServer -o .\UdemyApiWithToken\Domain -p .\UdemyApiWithToken\
