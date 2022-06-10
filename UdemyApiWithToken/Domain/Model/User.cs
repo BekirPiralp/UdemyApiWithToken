@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace UdemyApiWithToken.Domain
+namespace UdemyApiWithToken.Domain.Model
 {
     public partial class User
     {

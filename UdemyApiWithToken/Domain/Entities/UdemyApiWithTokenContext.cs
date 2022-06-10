@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace UdemyApiWithToken.Domain
+namespace UdemyApiWithToken.Domain.Entities
 {
     public partial class UdemyApiWithTokenContext : DbContext
     {
