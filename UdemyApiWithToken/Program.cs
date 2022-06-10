@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using UdemyApiWithToken.Domain.Entities;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,7 +10,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.Adds
+builder.Services.AddDbContext<UdemyApiWithTokenContext>(
+    opt =>
+    {
+        opt.UseSqlServer(
+            builder.Configuration.GetConnectionString("Varsayilan")
+            ); 
+    }
+    );
 
 var app = builder.Build();
 
