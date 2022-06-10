@@ -13,11 +13,19 @@
             Message = message;
             Entity = entity;
         }
-
+        
         //başarılı olursa
+        public  static IBaseResponse<TEntity> Response(TEntity entity)
+        {
+            return new BaseResponse<TEntity>(entity);
+        }
         public BaseResponse(TEntity entity) : this(true, String.Empty, entity) { }
 
         //başarısız olursa
+        public  static IBaseResponse<TEntity> Response(String message)
+        {
+            return new BaseResponse<TEntity>(message);
+        }
         public BaseResponse(String message) : this(false, message, null) { }
     }
 }

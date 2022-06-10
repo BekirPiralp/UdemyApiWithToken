@@ -3,7 +3,7 @@ using UdemyApiWithToken.Domain.Response;
 
 namespace UdemyApiWithToken.Domain.Services
 {
-    public interface IProductService:IBaseService<Product,ProductResponse>
+    public interface IProductService:IBaseService<Product,ProductResponse,ProductListResponse>
     {
     }
 }

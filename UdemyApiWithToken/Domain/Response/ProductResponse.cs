@@ -7,10 +7,8 @@ namespace UdemyApiWithToken.Domain.Response
         public ProductResponse(Product entity) : base(entity)
         {
         }
-
         public ProductResponse(string message) : base(message)
         {
         }
-
     }
 }
