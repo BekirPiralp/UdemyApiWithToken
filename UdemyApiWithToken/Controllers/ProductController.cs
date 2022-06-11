@@ -5,7 +5,7 @@ using AutoMapper;
 
 namespace UdemyApiWithToken.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class ProductController : ControllerBase
     {
@@ -23,6 +23,17 @@ namespace UdemyApiWithToken.Controllers
         {
             var response = await _productService.ListAsync();
 
+            return donder(response);
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult> GetFindById(int id)
+        {
+            return donder(await _productService.FindByIdAsync(id));
+        }
+
+        private ActionResult donder(dynamic response)
+        {
             if (response.Success)
                 return Ok(response.Entity);
             else
