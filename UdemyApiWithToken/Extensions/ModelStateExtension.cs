@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace UdemyApiWithToken.Domain.Extensions
+namespace UdemyApiWithToken.Extensions
 {
     public static class ModelStateExtension
     {
