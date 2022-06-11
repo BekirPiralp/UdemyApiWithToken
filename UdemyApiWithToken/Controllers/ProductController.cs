@@ -2,10 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using UdemyApiWithToken.Domain.Services;
 using AutoMapper;
+using UdemyApiWithToken.Resources;
+using UdemyApiWithToken.Extensions;
+using UdemyApiWithToken.Domain.Model;
 
 namespace UdemyApiWithToken.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    //[Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
     {
@@ -30,6 +34,42 @@ namespace UdemyApiWithToken.Controllers
         public async Task<ActionResult> GetFindById(int id)
         {
             return donder(await _productService.FindByIdAsync(id));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddProduct(ProductResource productResource)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.GetErrorMessages());
+            }
+            else
+            {
+                Product product = _mapper.Map<ProductResource,Product>(productResource);
+                
+                return donder(await _productService.AddAsync(product));
+            }
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> UpdateProduct(ProductResource productResource,int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.GetErrorMessages());
+            }
+            else
+            {
+                Product product = _mapper.Map<ProductResource, Product>(productResource);
+
+                return donder(await _productService.UpdateAsync(product,id));
+            }
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> RemoveProduct(int id)
+        {
+            return donder(await _productService.RemoveAsync(id));
         }
 
         private ActionResult donder(dynamic response)
