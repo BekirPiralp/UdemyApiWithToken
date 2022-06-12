@@ -1,4 +1,6 @@
-﻿namespace UdemyApiWithToken.Domain.Repositorys
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace UdemyApiWithToken.Domain.Repositorys
 {
     public interface IBaseRepository<TEntity>
         where TEntity : class

@@ -20,22 +20,22 @@ namespace UdemyApiWithToken.Domain.Repositorys
 
         public async Task<TEntity> GetByIdAsync(int entityId)
         {
-            return await (context.Set<TEntity>()).FindAsync(entityId);
+            return await context.Set<TEntity>().FindAsync(entityId);
         }
 
         public async Task<IEnumerable<TEntity>> ListAsync()
         {
-            return await (context.Set<TEntity>()).ToListAsync();
+            return await context.Set<TEntity>().ToListAsync();
         }
 
         public async Task RemoveAsync(int entityId)
         {
-            (context.Set<TEntity>()).Remove(await GetByIdAsync(entityId));
+            context.Set<TEntity>().Remove(await GetByIdAsync(entityId));
         }
 
         public void Update(TEntity entity)
         {
-            (context.Set<TEntity>()).Update(entity);
+            context.Set<TEntity>().Update(entity);
         }
     }
 }

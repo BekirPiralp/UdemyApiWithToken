@@ -1,11 +1,12 @@
-﻿using UdemyApiWithToken.Domain.Repositorys;
+﻿using Microsoft.EntityFrameworkCore;
+using UdemyApiWithToken.Domain.Repositorys;
 using UdemyApiWithToken.Domain.Response;
 using UdemyApiWithToken.Domain.Services;
 using UdemyApiWithToken.Domain.UnitOfWork;
 
 namespace UdemyApiWithToken.Services
 {
-    public class BaseService<TEntity, Response, ListResponse,IRepository>:IBaseService<TEntity,Response, ListResponse>
+    public class BaseService<TEntity, Response, ListResponse, IRepository> : IBaseService<TEntity, Response, ListResponse>
         where TEntity : class
         where Response : BaseResponse<TEntity>
         where ListResponse : BaseResponse<IEnumerable<TEntity>>
@@ -13,9 +14,9 @@ namespace UdemyApiWithToken.Services
     {
         IUnitOfWork _unitOfWork;
         IRepository _repository;
-        public BaseService(IRepository repository,IUnitOfWork unitOfWork)
+        public BaseService(IBaseRepository<TEntity> repository, IUnitOfWork unitOfWork)
         {
-            _repository = repository;
+            _repository = (IRepository)repository;
             _unitOfWork = unitOfWork;
         }
 
@@ -25,11 +26,11 @@ namespace UdemyApiWithToken.Services
             {
                 await _repository.AddAsync(entity);
                 await _unitOfWork.ComplateAsync();
-                return (Response)BaseResponse<TEntity>.Response(entity);
+                return (Response)Activator.CreateInstance(typeof(Response),entity);
             }
             catch (Exception ex)
             {
-                return (Response)BaseResponse<TEntity>.Response($"{nameof(TEntity)} nesnesi eklenirken hata oluştu::" +
+                return (Response)Activator.CreateInstance(typeof(Response), $"{nameof(TEntity)} nesnesi eklenirken hata oluştu::" +
                     $"{ex.Message}");
             }
         }
@@ -41,13 +42,13 @@ namespace UdemyApiWithToken.Services
             {
                 var val = await _repository.GetByIdAsync(entityId);
                 if (val == null)
-                    response = (Response)BaseResponse<TEntity>.Response($"{nameof(TEntity)} nesnesi bulunamadı.");
+                    response = (Response)Activator.CreateInstance(typeof(Response), $"{nameof(TEntity)} nesnesi bulunamadı.");
                 else
-                response = (Response)BaseResponse<TEntity>.Response(val);
+                    response = (Response)Activator.CreateInstance(typeof(Response), val);
             }
             catch (Exception ex)
             {
-                response = (Response)BaseResponse<TEntity>.Response($"{nameof(TEntity)} nesnesi getirilirken hata oluştu::{ex.Message}");
+                response = (Response)Activator.CreateInstance(typeof(Response), $"{nameof(TEntity)} nesnesi getirilirken hata oluştu::{ex.Message}");
             }
             return response;
         }
@@ -58,14 +59,20 @@ namespace UdemyApiWithToken.Services
             try
             {
                 var val = await _repository.ListAsync();
-                if(val == null || val.Count() < 1)
-                    response = (ListResponse)BaseResponse<IEnumerable<TEntity>>.Response($"{nameof(TEntity)} nesnesi bulunamadı.");
+                if (val == null || val.Count() < 1)
+                    response = (ListResponse)Activator.CreateInstance(typeof(ListResponse), $"{nameof(TEntity)} nesnesi bulunamadı.");
                 else
-                response = (ListResponse)BaseResponse<IEnumerable<TEntity>>.Response(val);
+                {
+
+                    //var gelen = new Response(val);//new BaseResponse<IEnumerable<TEntity>>(val);
+                    
+                    response = (ListResponse)Activator.CreateInstance(typeof(ListResponse), val); 
+                }
+
             }
             catch (Exception ex)
             {
-                response = (ListResponse)BaseResponse<IEnumerable<TEntity>>.Response($"{nameof(TEntity)} nesneleri" +
+                response = (ListResponse)Activator.CreateInstance(typeof(ListResponse),$"{nameof(TEntity)} nesneleri" +
                     $" getirilirken hata oluştu::{ex.Message}");
             }
             return response;
@@ -81,17 +88,17 @@ namespace UdemyApiWithToken.Services
                 {
                     await _repository.RemoveAsync(entityId);
                     await _unitOfWork.ComplateAsync();
-                    response = (Response)BaseResponse<TEntity>.Response(val);
+                    response = (Response)Activator.CreateInstance(typeof(Response), val);
                 }
                 else
-                    response = (Response)BaseResponse<TEntity>.Response($"{nameof(TEntity)} nesnesi bulunamadı.");
-                  
-                
+                    response = (Response)Activator.CreateInstance(typeof(Response), $"{nameof(TEntity)} nesnesi bulunamadı.");
+
+
 
             }
             catch (Exception ex)
             {
-                response = (Response)BaseResponse<IEnumerable<TEntity>>.Response($"{nameof(TEntity)} nesnesi" +
+                response = (Response)Activator.CreateInstance(typeof(Response), $"{nameof(TEntity)} nesnesi" +
                     $" silinirken hata oluştu::{ex.Message}");
             }
             return response;
@@ -108,15 +115,15 @@ namespace UdemyApiWithToken.Services
                     _repository.Update(entity);
                     await _unitOfWork.ComplateAsync();
                     var guncel = await _repository.GetByIdAsync(entityId);
-                    response = (Response)BaseResponse<TEntity>.Response(guncel);
+                    response = (Response)Activator.CreateInstance(typeof(Response), guncel);
                 }
                 else
-                    response = (Response)BaseResponse<TEntity>.Response($"{nameof(TEntity)} nesnesi bulunamadı.");
+                    response = (Response)Activator.CreateInstance(typeof(Response), $"{nameof(TEntity)} nesnesi bulunamadı.");
 
             }
             catch (Exception ex)
             {
-                response = (Response)BaseResponse<IEnumerable<TEntity>>.Response($"{nameof(TEntity)} nesnesi" +
+                response = (Response)Activator.CreateInstance(typeof(Response), $"{nameof(TEntity)} nesnesi" +
                     $" güncellenirken hata oluştu::{ex.Message}");
             }
             return response;

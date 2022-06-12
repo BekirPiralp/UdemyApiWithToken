@@ -4,8 +4,8 @@ namespace UdemyApiWithToken.Domain.Services
 {
     public interface IBaseService<TEntity,Respose,ListResponse>
         where TEntity : class
-        where Respose : BaseResponse<TEntity>
-        where ListResponse : BaseResponse<IEnumerable<TEntity>>
+        where Respose : IBaseResponse<TEntity>
+        where ListResponse : IBaseResponse<IEnumerable<TEntity>>
     {
         Task<ListResponse> ListAsync();
         Task<Respose> AddAsync(TEntity entity);

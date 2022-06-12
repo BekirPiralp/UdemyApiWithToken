@@ -26,7 +26,7 @@ namespace UdemyApiWithToken.Controllers
         public async Task<ActionResult> GetList()
         {
             var response = await _productService.ListAsync();
-
+            //return Ok(response);
             return donder(response);
         }
 
@@ -78,6 +78,7 @@ namespace UdemyApiWithToken.Controllers
                 return Ok(response.Entity);
             else
                 return BadRequest(response.Message);
+           
         }
     }
 }

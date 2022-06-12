@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using UdemyApiWithToken.Domain.Entities;
+using UdemyApiWithToken.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.Olustur();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

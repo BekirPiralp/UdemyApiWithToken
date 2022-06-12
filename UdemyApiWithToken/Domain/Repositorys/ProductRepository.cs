@@ -4,9 +4,9 @@ using UdemyApiWithToken.Domain.Model;
 
 namespace UdemyApiWithToken.Domain.Repositorys
 {
-    public class ProsuctRepository : BaseRepository<UdemyApiWithTokenContext,Product>,IProductRepository
+    public class ProductRepository : BaseRepository<UdemyApiWithTokenContext,Product>,IProductRepository
     {
-        public ProsuctRepository(UdemyApiWithTokenContext context) : base(context)
+        public ProductRepository(UdemyApiWithTokenContext context) : base(context)
         {
            
         }
