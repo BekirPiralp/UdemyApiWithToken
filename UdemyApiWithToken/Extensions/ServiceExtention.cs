@@ -58,8 +58,10 @@ namespace UdemyApiWithToken.Extensions
                         ValidateAudience = true, //dinleyeni kontrolet kimler dinleyecek
                         ValidateIssuer = true, //yayınlayanı kontrolet
                         ValidateLifetime = true, //süresini kontrolet
+                        ValidateIssuerSigningKey = true, //imzalamayı kontrol et kim imzalamış
                         ValidIssuer = tokenOptions.Issuer,
                         ValidAudience = tokenOptions.Audience,
+                        IssuerSigningKey = SignHandler.GetSecurityKey(tokenOptions.SecurityKey),
                     };
                 });
         }
