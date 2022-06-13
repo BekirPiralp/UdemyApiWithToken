@@ -44,7 +44,8 @@ namespace UdemyApiWithToken.Extensions
                 //{
                 //    builder.WithOrigins("https://www.abc.com").AllowAnyHeader().AllowAnyMethod();
                 //});
-            });            
+            });   
+            
         }
 
         public static void Addjwt(this IServiceCollection services,WebApplicationBuilder builder)
@@ -64,6 +65,11 @@ namespace UdemyApiWithToken.Extensions
                         IssuerSigningKey = SignHandler.GetSecurityKey(tokenOptions.SecurityKey),
                     };
                 });
+        }
+
+        public static void TokenOptionOlusturucu(this IServiceCollection services, WebApplicationBuilder builder)
+        {
+            services.Configure<TokenOptions>(builder.Configuration.GetSection("TokenOptions"));
         }
     }
 }
