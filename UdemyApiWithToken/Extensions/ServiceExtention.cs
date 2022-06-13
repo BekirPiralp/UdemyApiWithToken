@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using UdemyApiWithToken.Domain.Entities;
 using UdemyApiWithToken.Domain.Repositorys;
 using UdemyApiWithToken.Domain.Services;
 using UdemyApiWithToken.Domain.UnitOfWork;
 using UdemyApiWithToken.Mapping;
+using UdemyApiWithToken.Security.Token;
 using UdemyApiWithToken.Services;
 
 namespace UdemyApiWithToken.Extensions
@@ -22,8 +25,8 @@ namespace UdemyApiWithToken.Extensions
 
             //uygulama boyunca 1 defa
             //services.AddSingleton<IProductService, ProductService>();
-            
-            services.AddScoped<IProductRepository,ProductRepository>();
+
+            services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             //services.AddSingleton<DbContext,UdemyApiWithTokenContext>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -31,7 +34,7 @@ namespace UdemyApiWithToken.Extensions
 
             services.AddCors(opts =>
             {
-                opts.AddDefaultPolicy( builder =>
+                opts.AddDefaultPolicy(builder =>
                 {         //Tüm kaynaklar --- tüm headerler ----- tüm methodlar
                     builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
                 });
@@ -41,7 +44,24 @@ namespace UdemyApiWithToken.Extensions
                 //{
                 //    builder.WithOrigins("https://www.abc.com").AllowAnyHeader().AllowAnyMethod();
                 //});
-            });
+            });            
+        }
+
+        public static void Addjwt(this IServiceCollection services,WebApplicationBuilder builder)
+        {
+            var tokenOptions = builder.Configuration.GetSection("TokenOptions").Get<TokenOptions>();
+            //services.AddAuthentication("Benimshemam");
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
+                jwtBearerOpt => {
+                    jwtBearerOpt.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateAudience = true, //dinleyeni kontrolet kimler dinleyecek
+                        ValidateIssuer = true, //yayınlayanı kontrolet
+                        ValidateLifetime = true, //süresini kontrolet
+                        ValidIssuer = tokenOptions.Issuer,
+                        ValidAudience = tokenOptions.Audience,
+                    };
+                });
         }
     }
 }
