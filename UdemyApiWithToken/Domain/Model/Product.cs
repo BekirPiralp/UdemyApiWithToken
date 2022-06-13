@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace UdemyApiWithToken.Domain.Model
+﻿namespace UdemyApiWithToken.Domain.Model
 {
     public partial class Product
     {

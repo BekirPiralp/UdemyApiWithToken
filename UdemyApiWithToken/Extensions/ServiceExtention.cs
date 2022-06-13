@@ -22,10 +22,10 @@ namespace UdemyApiWithToken.Extensions
 
             //uygulama boyunca 1 defa
             //services.AddSingleton<IProductService, ProductService>();
-
+            
             services.AddScoped<IProductRepository,ProductRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<DbContext,UdemyApiWithTokenContext>();
+            //services.AddSingleton<DbContext,UdemyApiWithTokenContext>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
     }

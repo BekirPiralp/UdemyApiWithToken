@@ -17,7 +17,7 @@ builder.Services.AddDbContext<UdemyApiWithTokenContext>(
     {
         opt.UseSqlServer(
             builder.Configuration.GetConnectionString("Varsayilan")
-            ); 
+            );
     }
     );
 

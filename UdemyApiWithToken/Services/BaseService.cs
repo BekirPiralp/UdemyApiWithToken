@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using UdemyApiWithToken.Domain.Model;
 using UdemyApiWithToken.Domain.Repositorys;
 using UdemyApiWithToken.Domain.Response;
 using UdemyApiWithToken.Domain.Services;
@@ -109,10 +110,19 @@ namespace UdemyApiWithToken.Services
             Response response;
             try
             {
-                var val = await _repository.GetByIdAsync(entityId);
+                TEntity val = await _repository.GetByIdAsync(entityId);
                 if (val != null)
                 {
+                    //val = null;
+                    //GC.Collect();
+                    
+                    //val.Name = entity.Name;
+                    //val.Price = entity.Price;
+                    //val.Category = entity.Category;
+                    //await _unitOfWork.ComplateAsync();
+                    
                     _repository.Update(entity);
+
                     await _unitOfWork.ComplateAsync();
                     var guncel = await _repository.GetByIdAsync(entityId);
                     response = (Response)Activator.CreateInstance(typeof(Response), guncel);

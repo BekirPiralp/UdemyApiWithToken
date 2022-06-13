@@ -26,7 +26,7 @@ namespace UdemyApiWithToken.Controllers
         public async Task<ActionResult> GetList()
         {
             var response = await _productService.ListAsync();
-            //return Ok(response);
+            
             return donder(response);
         }
 
@@ -61,8 +61,19 @@ namespace UdemyApiWithToken.Controllers
             else
             {
                 Product product = _mapper.Map<ProductResource, Product>(productResource);
+                var veri = await _productService.FindByIdAsync(id);
+                veri.Entity.Price = product.Price;
+                veri.Entity.Name = product.Name;
+                veri.Entity.Category = product.Category;
 
-                return donder(await _productService.UpdateAsync(product,id));
+
+                /**
+                 * Sistemde getirilen nesne olup ta yeni nesne oluşturulup id eşitlemesi yapınca 
+                 * hata veriyor, sisdemde bu idli izlenen bir nesne var diye
+                 */
+                //Product test = new Product { Id = id,Name = product.Name,Category = product.Category,Price = product.Price };
+                //product.Id= id;
+                return donder(await _productService.UpdateAsync(veri.Entity,id));
             }
         }
 

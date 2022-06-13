@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using UdemyApiWithToken.Domain.Entities;
 
 namespace UdemyApiWithToken.Domain.UnitOfWork
 {
@@ -6,7 +7,7 @@ namespace UdemyApiWithToken.Domain.UnitOfWork
     {
         private readonly DbContext _context;
 
-        public UnitOfWork(DbContext context)
+        public UnitOfWork(UdemyApiWithTokenContext context)
         {
             _context = context;
         }
