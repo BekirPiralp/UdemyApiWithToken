@@ -76,5 +76,7 @@ namespace UdemyApiWithToken.Security.Token
         {
             user.RefreshToken = null;
         }
+
+       
     }
 }

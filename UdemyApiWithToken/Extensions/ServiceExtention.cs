@@ -44,8 +44,10 @@ namespace UdemyApiWithToken.Extensions
                 //{
                 //    builder.WithOrigins("https://www.abc.com").AllowAnyHeader().AllowAnyMethod();
                 //});
-            });   
-            
+            });
+
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRepository, UserRepository>();
         }
 
         public static void Addjwt(this IServiceCollection services,WebApplicationBuilder builder)

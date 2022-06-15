@@ -5,12 +5,14 @@ using AutoMapper;
 using UdemyApiWithToken.Resources;
 using UdemyApiWithToken.Extensions;
 using UdemyApiWithToken.Domain.Model;
+using Microsoft.AspNetCore.Authorization;
 
 namespace UdemyApiWithToken.Controllers
 {
     //[Route("api/[controller]/[action]")]
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
