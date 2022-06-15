@@ -1,12 +1,17 @@
-﻿using UdemyApiWithToken.Domain.Entities;
+﻿using Microsoft.Extensions.Options;
+using UdemyApiWithToken.Domain.Entities;
 using UdemyApiWithToken.Domain.Model;
+using UdemyApiWithToken.Security.Token;
 
 namespace UdemyApiWithToken.Domain.Repositorys
 {
     public class UserRepository :BaseRepository<UdemyApiWithTokenContext,User>, IUserRepository
     {
-        public UserRepository(UdemyApiWithTokenContext context) : base(context)
+        // bu token options bizim yadığımız token options dır
+        private readonly TokenOptions tokenOptions;
+        public UserRepository(IOptions<TokenOptions> options,UdemyApiWithTokenContext context) : base(context)
         {
+           tokenOptions = options.Value;
         }
 
         public void AddUSer(User user)
@@ -46,6 +51,8 @@ namespace UdemyApiWithToken.Domain.Repositorys
             User user = context.Users.FirstOrDefault(
                 u => u.Id == userId);
             user.RefreshToken = refreshToken;
+            user.RefreshTokenEndDate =
+                DateTime.Now.AddMinutes(tokenOptions.RefreshTokenExpiration);
         }
     }
 }
