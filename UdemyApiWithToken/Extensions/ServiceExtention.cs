@@ -48,6 +48,7 @@ namespace UdemyApiWithToken.Extensions
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
         }
 
         public static void Addjwt(this IServiceCollection services,WebApplicationBuilder builder)
