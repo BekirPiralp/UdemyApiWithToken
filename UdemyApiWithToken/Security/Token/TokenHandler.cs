@@ -72,9 +72,9 @@ namespace UdemyApiWithToken.Security.Token
             return claims;
         } 
 
-        public void RevokeRefreshToken(User user)
+        public void RemoveRefreshToken(User user)
         {
-            throw new NotImplementedException();
+            user.RefreshToken = null;
         }
     }
 }
