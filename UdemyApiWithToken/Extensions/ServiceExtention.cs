@@ -1,12 +1,8 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using UdemyApiWithToken.Domain.Entities;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using MIMT = Microsoft.IdentityModel.Tokens;
 using UdemyApiWithToken.Domain.Repositorys;
 using UdemyApiWithToken.Domain.Services;
 using UdemyApiWithToken.Domain.UnitOfWork;
-using UdemyApiWithToken.Mapping;
 using UdemyApiWithToken.Security.Token;
 using UdemyApiWithToken.Services;
 
@@ -48,6 +44,7 @@ namespace UdemyApiWithToken.Extensions
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ITokenHandler,TokenHandler>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
         }
 
@@ -57,7 +54,7 @@ namespace UdemyApiWithToken.Extensions
             //services.AddAuthentication("Benimshemam");
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
                 jwtBearerOpt => {
-                    jwtBearerOpt.TokenValidationParameters = new TokenValidationParameters()
+                    jwtBearerOpt.TokenValidationParameters = new MIMT.TokenValidationParameters()
                     {
                         ValidateAudience = true, //dinleyeni kontrolet kimler dinleyecek
                         ValidateIssuer = true, //yayınlayanı kontrolet

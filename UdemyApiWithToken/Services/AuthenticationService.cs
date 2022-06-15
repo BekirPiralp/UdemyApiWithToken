@@ -17,17 +17,54 @@ namespace UdemyApiWithToken.Services
 
         public AccessTokenResponse CreateAccessToken(string email, string password)
         {
-            throw new NotImplementedException();
+            AccessTokenResponse response;
+            var userResponse = service.FindByEmailAndPassword(email, password);
+            if(userResponse.Success)
+            {
+                response = new AccessTokenResponse(handler.CreateAccessToken(userResponse.Entity));
+            }
+            else
+            {
+                response = new AccessTokenResponse(userResponse.Message);
+            }
+            return response;
         }
 
         public AccessTokenResponse CreateAccessTokenByRefreshToken(string refreshToken)
         {
-            throw new NotImplementedException();
+            AccessTokenResponse response;
+            var userResponse = service.GetUserWithRefreshToken(refreshToken);
+            if(userResponse.Success){
+
+                if (userResponse.Entity.RefreshTokenEndDate >= DateTime.Now){
+                    response = new AccessTokenResponse(handler.CreateAccessToken(userResponse.Entity));
+                }
+                else{
+                    response = new AccessTokenResponse($"{userResponse.Entity.Name.ToUpper()} " +
+                        $"isimli kullanıcının tekrar giriş yapması lazım.");
+                }
+                
+            }
+            else{
+                response = new AccessTokenResponse
+                (userResponse.Message);
+            }
+            return response;
         }
 
         public AccessTokenResponse RemoveRefreshToken(string refreshToken)
         {
-            throw new NotImplementedException();
+            AccessTokenResponse response;
+            var userResponse = service.GetUserWithRefreshToken(refreshToken);
+            if(userResponse.Success){
+                service.RemoveRefreshToken(userResponse.Entity);
+                //handler.RemoveRefreshToken(userResponse.Entity)
+                response = new AccessTokenResponse(new AccessToken());//başarılı
+            }
+            else{
+                response = new AccessTokenResponse(userResponse.Message);
+            }
+            return response;
         }
     }
 }
