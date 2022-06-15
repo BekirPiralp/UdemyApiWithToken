@@ -1,4 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using UdemyApiWithToken.Domain.Model;
 
 namespace UdemyApiWithToken.Security.Token
@@ -13,8 +16,47 @@ namespace UdemyApiWithToken.Security.Token
 
         public AccessToken CreateAccessToken(User user)
         {
-            throw new NotImplementedException();
+            var accessTokenExpiration = DateTime.Now.AddMinutes(_tokenOptions.AccessTokenExpiration);
+            var securitiyKey = SignHandler.GetSecurityKey(_tokenOptions.SecurityKey);
+            
+            SigningCredentials signingCredentials = 
+                new SigningCredentials(securitiyKey,SecurityAlgorithms.HmacSha256Signature);
+
+            JwtSecurityToken jwtSecurityToken = new JwtSecurityToken(
+                issuer:_tokenOptions.Issuer,
+                audience:_tokenOptions.Audience,
+                expires:accessTokenExpiration,
+                notBefore:DateTime.Now,//ilgili zamandan sonra kullanılmaya başlansın
+                signingCredentials: signingCredentials,
+                claims: GetClaims(user)
+                );
+
+            var handler = new JwtSecurityTokenHandler();
+
+            var token = handler.WriteToken(jwtSecurityToken);
+
+            var accessToken = new AccessToken();
+
+            
+            accessToken.Token = token;
+            accessToken.RefreshToken = null;
+            accessToken.Expiration = accessTokenExpiration;
+
+            return accessToken;
         }
+
+        private IEnumerable<Claim> GetClaims(User user)
+        {
+            var claims = new List<Claim>
+            {   // şekillerde claimler oluşturabiliriz
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim("Name",$"{user.Name} {user.SurName}"),
+                new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
+            };
+
+            return claims;
+        } 
 
         public void RevokeRefreshToken(User user)
         {
