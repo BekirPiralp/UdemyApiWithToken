@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using UdemyApiWithToken.Domain.Model;
 
 namespace UdemyApiWithToken.Security.Token
@@ -39,10 +40,23 @@ namespace UdemyApiWithToken.Security.Token
 
             
             accessToken.Token = token;
-            accessToken.RefreshToken = null;
+            accessToken.RefreshToken = CreateRefreshToken();
             accessToken.Expiration = accessTokenExpiration;
 
             return accessToken;
+        }
+
+        private string CreateRefreshToken()
+        {
+            //return Guid.NewGuid().ToString(); //tahmin edilebiliyor...
+            var numberByte = new Byte[64];
+
+            using(var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(numberByte);
+
+                return Convert.ToBase64String(numberByte);
+            }
         }
 
         private IEnumerable<Claim> GetClaims(User user)
