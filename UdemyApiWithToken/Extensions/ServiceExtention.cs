@@ -63,6 +63,7 @@ namespace UdemyApiWithToken.Extensions
                         ValidIssuer = tokenOptions.Issuer,
                         ValidAudience = tokenOptions.Audience,
                         IssuerSigningKey = SignHandler.GetSecurityKey(tokenOptions.SecurityKey),
+                        ClockSkew = TimeSpan.Zero
                     };
                 });
         }
