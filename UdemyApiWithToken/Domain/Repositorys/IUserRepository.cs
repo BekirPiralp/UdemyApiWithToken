@@ -4,7 +4,7 @@ namespace UdemyApiWithToken.Domain.Repositorys
 {
     public interface IUserRepository
     {
-        void AddUSer(User user);
+        void AddUser(User user);
 
         User FindById(int id);
 

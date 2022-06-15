@@ -12,6 +12,11 @@ namespace UdemyApiWithToken.Domain.UnitOfWork
             _context = context;
         }
 
+        public void Complate()
+        {
+            _context.SaveChanges();
+        }
+
         public async Task ComplateAsync()
         {
             await _context.SaveChangesAsync();

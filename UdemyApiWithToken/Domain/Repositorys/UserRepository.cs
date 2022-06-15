@@ -14,7 +14,7 @@ namespace UdemyApiWithToken.Domain.Repositorys
            tokenOptions = options.Value;
         }
 
-        public void AddUSer(User user)
+        public void AddUser(User user)
         {
             context.Users.Add(user);
         }
