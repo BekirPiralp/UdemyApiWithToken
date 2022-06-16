@@ -44,6 +44,7 @@ namespace UdemyApiWithToken.Domain.Repositorys
         {
             User newUser = context.Users.FirstOrDefault(u => u.Id == user.Id);
             newUser.RefreshToken = null;
+            newUser.RefreshTokenEndDate = null;
         }
 
         public void SaveRefreshToken(int userId, string refreshToken)

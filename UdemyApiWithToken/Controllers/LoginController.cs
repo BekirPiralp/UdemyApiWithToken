@@ -6,7 +6,7 @@ using UdemyApiWithToken.Resources;
 
 namespace UdemyApiWithToken.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[Action]")]
     [ApiController]
     public class LoginController : ControllerBase
     {

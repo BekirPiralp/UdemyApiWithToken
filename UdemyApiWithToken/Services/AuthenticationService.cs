@@ -21,7 +21,9 @@ namespace UdemyApiWithToken.Services
             var userResponse = service.FindByEmailAndPassword(email, password);
             if(userResponse.Success)
             {
-                response = new AccessTokenResponse(handler.CreateAccessToken(userResponse.Entity));
+                var accessToken = handler.CreateAccessToken(userResponse.Entity);
+                service.SaveRefreshToken(userResponse.Entity.Id, accessToken.RefreshToken);
+                response = new AccessTokenResponse(accessToken);
             }
             else
             {
@@ -37,7 +39,11 @@ namespace UdemyApiWithToken.Services
             if(userResponse.Success){
 
                 if (userResponse.Entity.RefreshTokenEndDate >= DateTime.Now){
-                    response = new AccessTokenResponse(handler.CreateAccessToken(userResponse.Entity));
+
+                    var accessToken = handler.CreateAccessToken(userResponse.Entity);
+                    service.SaveRefreshToken(userResponse.Entity.Id, accessToken.RefreshToken);
+
+                    response = new AccessTokenResponse(accessToken);
                 }
                 else{
                     response = new AccessTokenResponse($"{userResponse.Entity.Name.ToUpper()} " +
