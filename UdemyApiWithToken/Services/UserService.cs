@@ -22,9 +22,18 @@ namespace UdemyApiWithToken.Services
             UserResponse response;
             try
             {
-                repository.AddUser(user);
-                unitOfWork.Complate();
-                response = new UserResponse(user);
+                User userr = repository.FindByEmailAndPassword(user.Email, user.Password);
+                if(userr == null)
+                {
+                    repository.AddUser(user);
+                    unitOfWork.Complate();
+                    response = new UserResponse(user);
+                }
+                else
+                {
+                    response = new UserResponse($"Bu kullanıcı daha önce eklenmiş");
+                }
+                
             }
             catch (Exception ex)
             {

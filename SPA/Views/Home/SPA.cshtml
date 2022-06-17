@@ -1,0 +1,214 @@
+﻿
+@{
+    ViewData["Title"] = "SPA";
+}
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(
+            function() {
+                $("#btnSave").click(
+                    function() {
+                        let name = $('#name').val();// sadece bu adakullanılabilir var ise daha büyük alanda
+                        let surname = $('#surname').val();
+                        let email = $("#email").val();
+                        let passwrod = $('#password').val();
+
+                        let user = {
+                            "email": email,
+                            "password": passwrod,
+                            "name": name,
+                            "surName": surname
+                        };
+
+                        var URL = "https://localhost:7253/api/User";
+
+                        $.ajax({
+                            type: "POST",
+                            crossDomain: true,
+                            url: URL,
+                            data: JSON.stringify(user),
+                            success: function(data) {
+                                console.table(data);
+                            },
+                            error: function(error) {
+                                alert(error.responseText);
+                                console.error(error);
+
+                            },
+                            contentType: "application/json",
+                            dataType: "json"
+                        });
+                    }
+                )
+
+                function getPriceData() {
+                    var url = "https://localhost:7253/api/Product";
+
+                    let token = localStorage.getItem("token");
+                    
+                    $.ajax({
+                        type:"GET",
+                        url:url,
+                        async:false,
+                        crossDomain:true,
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader("Authorization", "Bearer " + token);
+                        },
+                        statusCode: {
+                            401: function() { },
+                        },
+                        success: function(data) {
+                            console.table(data);
+                            //$("#girisDiv").hide();
+                            let ek = "";
+                            
+                            data.forEach(
+                                function(item) {
+                                    ek += `<tr><td>${item.id}</td><td>${item.name}</td><td>${item.category}</td><td>${item.price}</td></tr>`;
+                                }
+                            );
+
+                            $("#urunDiv").show().html("").append(
+                                `<table class='table'>
+                                <tr><th>id</th><th>name</th><th>category</th><th>price</th></tr>
+                                ${ek}
+                                </table>
+                                `
+                            );
+                        },
+                        error: function(error) {
+                            alert(error.responseText);
+                            console.error(error);
+                        },
+                        contentType: "application/json",
+                        dataType: "json"
+                    });
+                }
+
+                function getUserData() {
+                    var url = "https://localhost:7253/api/User";
+
+                    let token = localStorage.getItem("token");
+                    
+                    $.ajax({
+                        type:"GET",
+                        url:url,
+                        async:false,
+                        crossDomain:true,
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader("Authorization", "Bearer " + token);
+                        },
+                        statusCode: {
+                            401: function() { },
+                        },
+                        success: function(data) {
+                            console.table(data);
+                            
+                            $("#userDiv").show().html("").append(
+                                `<table class='table'>
+                                <tr><th>id</th><th>name</th><th>surname</th><th>email</th><th>password</th></tr>
+                                <tr><td>${data.id}</td><td>${data.name}</td><td>${data.surName}</td>
+                                <td>${data.email}</td><td>${data.password}</td></tr>
+                                </table>
+                                `
+                            );
+                        },
+                        error: function(error) {
+                            alert(error.responseText);
+                            console.error(error);
+                        },
+                        contentType: "application/json",
+                        dataType: "json"
+                    });
+                }
+
+                $("#btnGiris").click(
+                    function() {
+                        let email = $('#girMail').val();
+                        let password = $('#girPassword').val();
+
+                        let data = {
+                            "email": email,
+                            "password": password
+                        };
+
+                        var url = "https://localhost:7253/api/Login/AccessToken";
+
+                        $.ajax({
+                            type: "POST",
+                            crossDomain: true,
+                            url: url,
+                            data: JSON.stringify(data),
+                            success: function(data) {
+                                alert(data.token+"\n\n\n"+data.refreshToken);
+                                console.table(data);
+                                localStorage.setItem("token", data.token);
+                                localStorage.setItem("refreshToken", data.refreshToken);
+                                getUserData();
+                                getPriceData();
+                            },
+                            error: function(error) {
+                                alert(error.responseText);
+                                console.error(error);
+                            },
+                            contentType: "application/json",
+                            dataType: "json"
+                        });
+
+                    }
+                )
+            }
+        )
+    </script>
+}
+
+
+<div class="container ">
+    <div class="row">
+        <div class="col-md-6" style="border-right-style:dashed;border-color:red">
+            <h2>Kayıt Ekranı</h2>
+            <form >
+                <div class="mb-3" >
+                    <input type="text" class="form-control " id="name" placeholder="isminiz" /><!--value="test"/>-->
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="surname" placeholder="soy isminiz"/> <!--value="test"/>-->
+                </div>
+                <div class="mb-3">
+                    <input type="email" class="form-control" id="email" placeholder="email" /> <!--value="test@mail.com"/>-->
+                </div>
+                <div class="mb-3" >
+                    <input type="password" class="form-control" id="password" placeholder="şifreniz" /> <!--value="test"/>-->
+                </div>
+                <div style="text-align:center;">
+                    <button type="button" id="btnSave" class="btn-primary">Kaydet</button>
+                </div>
+
+            </form>
+
+            <div id="userDiv"></div>
+
+        </div>
+        <div class="col-md-6" style="border-left-style:dashed">
+
+            <div id="girisDiv">
+                <h2>Giriş ekranı</h2>
+                <form >
+                    <div class="mb-3 ">
+                        <input type="email" class="form-control" id="girMail" placeholder="Emailiniz"/>
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" class="form-control" id="girPassword" placeholder="şifreniz" />
+                    </div>
+                    <div style="text-align:center;">
+                        <button type="button" id="btnGiris" class="btn-success" style="width:50%; ">Giriş</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="urunDiv"></div>
+
+        </div>
+    </div>
+</div>
+

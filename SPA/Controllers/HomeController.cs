@@ -13,6 +13,11 @@ namespace SPA.Controllers
             _logger = logger;
         }
 
+        public IActionResult SPA()
+        {
+            return View();
+        }
+
         public IActionResult Index()
         {
             return View();
