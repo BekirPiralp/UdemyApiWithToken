@@ -6,6 +6,11 @@
     <script type="text/javascript">
         $(document).ready(
             function() {
+
+                //ilk yüklenirken yapılacak işlemler...
+                $("#urunDiv").hide();
+                $("#userDiv").hide();
+
                 $("#btnSave").click(
                     function() {
                         let name = $('#name').val();// sadece bu adakullanılabilir var ise daha büyük alanda
@@ -41,6 +46,41 @@
                     }
                 )
 
+                function getDataRefreshToken() {
+                    var url = "https://localhost:7253/api/Login/RefreshToken";
+
+                    let refreshToken = localStorage.getItem("refreshToken");
+                    let dataRefresh = {
+                        "refreshToken": refreshToken,
+                    };
+                     $.ajax({
+                            type: "POST",
+                            crossDomain: true,
+                            url: url,
+                            data: JSON.stringify(dataRefresh),
+                            success: function(data) {
+                                alert(data.token+"\n\n\n"+data.refreshToken);
+                                console.table(data);
+                                localStorage.setItem("token", data.token);
+                                localStorage.setItem("refreshToken", data.refreshToken);
+                                getUserData();
+                                getPriceData();
+                            },
+                            error: function(error) {
+                                alert(error.responseText);
+                                console.error(error);
+                            },
+                            contentType: "application/json",
+                            dataType: "json",
+                            statusCode: {
+                            400: function() {
+                                localStorage.removeItem("token");//refreshToken
+                                localStorage.removeItem("refreshToken");
+                            },
+                        }
+                     });
+                }
+
                 function getPriceData() {
                     var url = "https://localhost:7253/api/Product";
 
@@ -55,13 +95,19 @@
                             xhr.setRequestHeader("Authorization", "Bearer " + token);
                         },
                         statusCode: {
-                            401: function() { },
+                            401: function() {
+                                getDataRefreshToken();
+                            },
                         },
                         success: function(data) {
                             console.table(data);
                             //$("#girisDiv").hide();
                             let ek = "";
                             
+                            //$.each(data,(key,item)=>{
+                            //    ek += `<tr><td>${item.id}</td><td>${item.name}</td><td>${item.category}</td><td>${item.price}</td></tr>`;
+                            //});
+
                             data.forEach(
                                 function(item) {
                                     ek += `<tr><td>${item.id}</td><td>${item.name}</td><td>${item.category}</td><td>${item.price}</td></tr>`;
@@ -69,7 +115,7 @@
                             );
 
                             $("#urunDiv").show().html("").append(
-                                `<table class='table'>
+                                `<table class='table table-bordered'>
                                 <tr><th>id</th><th>name</th><th>category</th><th>price</th></tr>
                                 ${ek}
                                 </table>
@@ -99,7 +145,9 @@
                             xhr.setRequestHeader("Authorization", "Bearer " + token);
                         },
                         statusCode: {
-                            401: function() { },
+                            401: function() { 
+                                getDataRefreshToken();
+                            },
                         },
                         success: function(data) {
                             console.table(data);
@@ -133,28 +181,37 @@
                         };
 
                         var url = "https://localhost:7253/api/Login/AccessToken";
+                        let token = localStorage.getItem("token");
+                        if (token == null) {
+                            $.ajax({
+                                type: "POST",
+                                crossDomain: true,
+                                url: url,
+                                data: JSON.stringify(data),
+                                success: function(data) {
+                                    alert(data.token + "\n\n\n" + data.refreshToken);
+                                    console.table(data);
+                                    localStorage.setItem("token", data.token);
+                                    localStorage.setItem("refreshToken", data.refreshToken);
+                                    getUserData();
+                                    getPriceData();
+                                },
+                                error: function(error) {
+                                    alert(error.responseText);
+                                    console.error(error);
 
-                        $.ajax({
-                            type: "POST",
-                            crossDomain: true,
-                            url: url,
-                            data: JSON.stringify(data),
-                            success: function(data) {
-                                alert(data.token+"\n\n\n"+data.refreshToken);
-                                console.table(data);
-                                localStorage.setItem("token", data.token);
-                                localStorage.setItem("refreshToken", data.refreshToken);
-                                getUserData();
-                                getPriceData();
-                            },
-                            error: function(error) {
-                                alert(error.responseText);
-                                console.error(error);
-                            },
-                            contentType: "application/json",
-                            dataType: "json"
-                        });
-
+                                },
+                                contentType: "application/json",
+                                dataType: "json"
+                            });
+                        } else {
+                            getUserData();
+                            getPriceData();
+                        }
+                        
+                        $("#urunDiv").show();
+                        $("#userDiv").show();
+                        
                     }
                 )
             }
